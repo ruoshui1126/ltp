@@ -20,7 +20,7 @@ JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserCreate
  * Method:    parserRarse
  * Signature: (Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;)I
  */
-JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserRarse
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserParse
   (JNIEnv *, jclass, jobject, jobject, jobject, jobject);
 
 /*

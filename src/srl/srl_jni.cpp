@@ -26,7 +26,7 @@ JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_SrlJNI_srlSrl
   jmethodID integer_construct =env->GetMethodID(integer,"<init>","(I)V");
   jmethodID integer_int =env->GetMethodID(integer,"intValue","()I");
 
-  jclass pair = env->FindClass("Pair");
+  jclass pair = env->FindClass("edu/hit/ir/ltpNative/Pair");
   jmethodID pair_construct = env->GetMethodID(pair,"<init>","(Ljava/lang/Object;Ljava/lang/Object;)V");
 
   std::vector<std::string> words,tags,ners,deprels;

@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserCreate
   env->ReleaseStringUTFChars( model_path, str); 
 }
 
-JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserRarse
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserParse
 (JNIEnv * env, jclass obj, jobject  array_words, jobject  array_tags, jobject  array_heads, jobject  array_deprels){
 
   jclass array_list = env->GetObjectClass(array_words);

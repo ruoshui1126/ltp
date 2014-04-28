@@ -17,3 +17,8 @@ SET(splitsnt_source
     SplitSentence.h)
 
 ADD_LIBRARY(splitsnt ${splitsnt_source})
+ADD_LIBRARY(splitsnt_jni SHARED split_sentence_jni.cpp ${splitsnt_source})
+set_target_properties (splitsnt_jni PROPERTIES
+  LIBRARY_OUTPUT_DIRECTORY
+${LIBRARY_OUTPUT_PATH}/jni/
+    OUTPUT_NAME split_sentence_jni)
