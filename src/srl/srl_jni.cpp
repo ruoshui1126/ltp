@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-JNIEXPORT void JNICALL Java_SrlJNI_srlCreate
+JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_SrlJNI_srlCreate
 (JNIEnv * env, jclass obj, jstring model_path){
   const char * str = env->GetStringUTFChars( model_path , 0);
   std::string path(str);
@@ -13,7 +13,7 @@ JNIEXPORT void JNICALL Java_SrlJNI_srlCreate
   env->ReleaseStringUTFChars( model_path, str); 
 }
 
-JNIEXPORT jint JNICALL Java_SrlJNI_srlSrl
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_SrlJNI_srlSrl
 (JNIEnv * env, jclass obj, jobject array_words, jobject array_tags, jobject array_ners, jobject array_heads, jobject array_deprels, jobject srl_result){
 	
   jclass array_list = env->GetObjectClass(array_words);
@@ -85,7 +85,10 @@ JNIEXPORT jint JNICALL Java_SrlJNI_srlSrl
     parsers.push_back(make_pair(heads.at(i),deprels.at(i)));
   }
 
-  DoSRL(words,tags,ners,parsers,srls);
+  int len = DoSRL(words,tags,ners,parsers,srls);
+
+  if(len<0)
+    return -1;
 
   for(int i = 0;i<srls.size();++i) {
     jobject trigger = env->NewObject(integer,integer_construct,srls[i].first);
@@ -106,10 +109,10 @@ JNIEXPORT jint JNICALL Java_SrlJNI_srlSrl
     env->CallBooleanMethod(srl_result,list_add,outer);
   }
 
-  return 1;
+  return srls.size();
 }
 
-JNIEXPORT void JNICALL Java_SrlJNI_srlRelease
+JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_SrlJNI_srlRelease
 (JNIEnv * env, jclass obj){
 	SRL_ReleaseResource();
 }
