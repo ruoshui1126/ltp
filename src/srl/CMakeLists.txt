@@ -55,7 +55,7 @@ add_library (srl_jni_shared_lib SHARED srl_jni.cpp ${srl_SRC})
 
 set_target_properties (srl_jni_shared_lib   PROPERTIES
     VERSION         ${srl_VERSION}
-    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni
+    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni/
     OUTPUT_NAME     srl_jni)
 
 

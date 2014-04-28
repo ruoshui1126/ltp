@@ -31,7 +31,7 @@ add_library (ner_jni_shared_lib SHARED ner_jni.cpp ner_dll.cpp ${ner_SRC})
 
 set_target_properties (ner_jni_shared_lib PROPERTIES
     VERSION     ${ner_VERSION}
-    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni
+    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni/
     OUTPUT_NAME ner_jni)
 
 

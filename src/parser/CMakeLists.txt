@@ -34,7 +34,7 @@ add_library(parser_jni_shared_lib SHARED parser_jni.cpp parser_dll.cpp ${lgdpj_S
 
 set_target_properties (parser_jni_shared_lib    PROPERTIES
     VERSION         ${lgdpj_VERSION}
-    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni
+    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni/
     OUTPUT_NAME     parser_jni)
 
 

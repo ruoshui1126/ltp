@@ -49,7 +49,7 @@ target_link_libraries (segmentor_jni_shared_lib boost_regex_shared_lib)
 
 set_target_properties (segmentor_jni_shared_lib PROPERTIES
     VERSION     ${segment_VERSION} LIBRARY_OUTPUT_DIRECTORY
-${LIBRARY_OUTPUT_PATH}/jni
+${LIBRARY_OUTPUT_PATH}/jni/
     OUTPUT_NAME segmentor_jni)
 
 # -----------------------------------------------
