@@ -20,6 +20,14 @@ set_target_properties (ner_shared_lib PROPERTIES
     VERSION     ${ner_VERSION}
     OUTPUT_NAME ner)
 
+add_library (ner_jni_shared_lib SHARED ner_jni.cpp ner_dll.cpp ${ner_SRC})
+
+set_target_properties (ner_jni_shared_lib PROPERTIES
+    VERSION     ${ner_VERSION}
+    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni
+    OUTPUT_NAME ner_jni)
+
+
 add_executable (otner otner.cpp ${ner_SRC})
 #target_link_libraries (otner boost_regex)
 

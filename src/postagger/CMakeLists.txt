@@ -26,7 +26,15 @@ add_library (postagger_shared_lib SHARED postag_dll.cpp ${postagger_SRC})
 set_target_properties (postagger_shared_lib PROPERTIES
     VERSION     ${postagger_VERSION}
     OUTPUT_NAME postagger)
+# -----------------------------------------------
+# JNI SHARED LIBRARY
+# -----------------------------------------------
+add_library (postagger_jni_shared_lib SHARED postag_jni.cpp postag_dll.cpp ${postagger_SRC})
 
+set_target_properties (postagger_jni_shared_lib PROPERTIES
+    VERSION     ${postagger_VERSION}
+LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni
+    OUTPUT_NAME postagger_jni)
 
 add_library (postagger postag_dll.cpp ${postagger_SRC})
 

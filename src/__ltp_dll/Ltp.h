@@ -15,8 +15,8 @@
 using namespace std;
 
 // extern ofstream ltp_log_file;
-#define MAX_SENTENCE_LEN 300
-#define MAX_WORDS_NUM  100
+#define MAX_SENTENCE_LEN 3000
+#define MAX_WORDS_NUM  1000
 
 enum ErrorCodes {
   kEmptyStringError = 1,  /*< The input sentence is empty */

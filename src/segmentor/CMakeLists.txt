@@ -1,4 +1,5 @@
-include_directories ( ${SOURCE_DIR} ${THIRDPARTY_DIR}/boost/include )
+include_directories ( ${SOURCE_DIR} ${THIRDPARTY_DIR}/boost/include
+$ENV{JAVA_HOME}/include $ENV{JAVA_HOME}/include/linux)
 
 set (segment_VERSION "0.0.1")
 
@@ -31,6 +32,20 @@ target_link_libraries (segmentor_shared_lib boost_regex_shared_lib)
 set_target_properties (segmentor_shared_lib PROPERTIES
     VERSION     ${segment_VERSION}
     OUTPUT_NAME segmentor)
+
+# -----------------------------------------------
+# JNI SHARED LIBRARY
+# -----------------------------------------------
+
+
+add_library (segmentor_jni_shared_lib SHARED segment_jni.cpp segment_dll.cpp ${segment_SRC})
+
+target_link_libraries (segmentor_jni_shared_lib boost_regex_shared_lib)
+
+set_target_properties (segmentor_jni_shared_lib PROPERTIES
+    VERSION     ${segment_VERSION} LIBRARY_OUTPUT_DIRECTORY
+${LIBRARY_OUTPUT_PATH}/jni
+    OUTPUT_NAME segmentor_jni)
 
 # -----------------------------------------------
 # TOOLKIT

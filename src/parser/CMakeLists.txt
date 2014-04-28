@@ -24,6 +24,14 @@ set_target_properties (parser_shared_lib    PROPERTIES
     VERSION         ${lgdpj_VERSION}
     OUTPUT_NAME     parser)
 
+add_library(parser_jni_shared_lib SHARED parser_jni.cpp parser_dll.cpp ${lgdpj_SRC})
+
+set_target_properties (parser_jni_shared_lib    PROPERTIES
+    VERSION         ${lgdpj_VERSION}
+    LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/jni
+    OUTPUT_NAME     parser_jni)
+
+
 # redirect output binary to tools/train
 add_executable(lgdpj lgdpj.cpp ${lgdpj_SRC})
 set_target_properties (lgdpj
