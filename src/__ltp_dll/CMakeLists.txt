@@ -8,7 +8,14 @@ include_directories (./
     ${parser_DIR}
     ${ner_DIR}
     ${srl_DIR}
-    ${THIRDPARTY_DIR}/tinyxml)
+    ${THIRDPARTY_DIR}/tinyxml
+    $ENV{JAVA_HOME}/include)
+
+if(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/win32)
+else(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/linux)
+endif(WIN32)
 
 SET(ltp_SRC
     Ltp.cpp

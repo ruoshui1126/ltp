@@ -1,4 +1,11 @@
-include_directories (${SOURCE_DIR}/ ${THIRDPARTY_DIR}/boost/include/)
+include_directories (${SOURCE_DIR}/ ${THIRDPARTY_DIR}/boost/include/
+ $ENV{JAVA_HOME}/include)
+
+if(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/win32)
+else(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/linux)
+endif(WIN32)
 
 set (ner_VERSION "0.0.1")
 

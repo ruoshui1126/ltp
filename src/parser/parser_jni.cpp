@@ -1,4 +1,4 @@
-#include "ParserJNI.h"
+#include "edu_hit_ir_ltpNative_ParserJNI.h"
 #include "parser_dll.h"
 #include "utils/strutils.hpp"
 #include <vector>

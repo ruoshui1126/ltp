@@ -1,4 +1,10 @@
-include_directories (  ${SOURCE_DIR}/ )
+include_directories (  ${SOURCE_DIR}/ $ENV{JAVA_HOME}/include)
+
+if(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/win32)
+else(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/linux)
+endif(WIN32)
 
 set (postagger_VERSION "0.0.1")
 

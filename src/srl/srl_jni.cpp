@@ -1,4 +1,4 @@
-#include "SrlJNI.h"
+#include "edu_hit_ir_ltpNative_SrlJNI.h"
 #include "SRL_DLL.h"
 #include "strutils.hpp"
 #include <vector>

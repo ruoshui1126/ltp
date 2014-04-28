@@ -3,7 +3,14 @@ include_directories (
     ${util_DIR} 
     ${SOURCE_DIR}/utils
     ${THIRDPARTY_DIR}/boost/include
-    ${THIRDPARTY_DIR}/maxent)
+    ${THIRDPARTY_DIR}/maxent
+    $ENV{JAVA_HOME}/include)
+	
+if(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/win32)
+else(WIN32)
+include_directories ($ENV{JAVA_HOME}/include/linux)
+endif(WIN32)
 
 set (srl_VERSION "0.0.1")
 
