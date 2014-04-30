@@ -2,6 +2,8 @@
 #define __LTP_PARSER_RULE_BASED_H__
 
 #include <vector>
+#include <iostream>
+#include <string>
 
 namespace ltp {
 namespace parser {
