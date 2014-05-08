@@ -4,10 +4,9 @@
 # - project output header
 include_directories (./
     ${SOURCE_DIR}/
-    ${THIRDPARTY_DIR}/gtest/include)
-
+    ${THIRDPARTY_DIR}/gtest/include
+    ${THIRDPARTY_DIR}/boost/include)
 link_directories (${LIBRARY_OUTPUT_PATH})
-
 # add unittest executable
 set (utils_strutils_unittest_SRC ./utils_strutils_unittest.cpp)
 add_executable (utils_strutils_unittest ${utils_strutils_unittest_SRC})
@@ -44,6 +43,13 @@ add_executable (utils_strpaste_unittest ${utils_strpaste_unittest_SRC})
 target_link_libraries (utils_strpaste_unittest gtest pthread)
 set_target_properties(utils_strpaste_unittest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
+
+set (engpattern_unittest_SRC ./engpattern_unittest.cpp)
+add_executable (engpattern_unittest ${engpattern_unittest_SRC})
+target_link_libraries (engpattern_unittest boost_regex gtest pthread)
+set_target_properties(engpattern_unittest PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/unittest/)
+
 
 set (segmentor_unittest_SRC ./segmentor_unittest.cpp)
 add_executable (segmentor_unittest ${segmentor_unittest_SRC})
