@@ -5,12 +5,16 @@
 #include <string>
 #include <iostream>
 
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_SrlJNI_srlCreate
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_SrlJNI_srlCreate
 (JNIEnv * env, jclass obj, jstring model_path){
   const char * str = env->GetStringUTFChars( model_path , 0);
   std::string path(str);
-  SRL_LoadResource(path);
+  int tag = SRL_LoadResource(path);
   env->ReleaseStringUTFChars( model_path, str); 
+  if(0==tag) {
+    return 1;
+  }
+  return -1;
 }
 
 JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_SrlJNI_srlSrl

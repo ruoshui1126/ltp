@@ -7,7 +7,7 @@
 
 static void * postagger = NULL;
 
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate
 (JNIEnv * env, jclass obj, jstring model_path){
   const char * str = env->GetStringUTFChars( model_path , 0);
   if(!postagger){
@@ -18,6 +18,10 @@ JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate
     postagger = postagger_create_postagger(str);
   }
   env->ReleaseStringUTFChars( model_path, str); 
+  if(postagger) {
+    return 1;
+  }
+  return -1;
 }
 
 JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerPostag

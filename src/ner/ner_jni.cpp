@@ -6,7 +6,7 @@
 
 static void * ner = NULL;
 
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_NerJNI_nerCreate
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_NerJNI_nerCreate
 (JNIEnv * env, jclass obj, jstring model_path){
   const char * str = env->GetStringUTFChars( model_path , 0);
   if(!ner){
@@ -17,6 +17,10 @@ JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_NerJNI_nerCreate
     ner = ner_create_recognizer(str);
   }
   env->ReleaseStringUTFChars( model_path, str); 
+  if(ner) {
+    return 1;
+  }
+  return -1;
 }
 
 

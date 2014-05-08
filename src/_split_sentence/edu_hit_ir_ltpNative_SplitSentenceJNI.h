@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     edu_hit_ir_ltpNative_SplitSentenceJNI
  * Method:    splitSentence
- * Signature: (Ljava/lang/String;Ljava/util/ArrayList;)V
+ * Signature: (Ljava/lang/String;Ljava/util/List;)V
  */
 JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_SplitSentenceJNI_splitSentence
   (JNIEnv *, jclass, jstring, jobject);

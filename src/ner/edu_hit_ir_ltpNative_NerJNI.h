@@ -10,15 +10,15 @@ extern "C" {
 /*
  * Class:     edu_hit_ir_ltpNative_NerJNI
  * Method:    nerCreate
- * Signature: (Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_NerJNI_nerCreate
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_NerJNI_nerCreate
   (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     edu_hit_ir_ltpNative_NerJNI
  * Method:    nerRecognize
- * Signature: (Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;)I
+ * Signature: (Ljava/util/List;Ljava/util/List;Ljava/util/List;)I
  */
 JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_NerJNI_nerRecognize
   (JNIEnv *, jclass, jobject, jobject, jobject);

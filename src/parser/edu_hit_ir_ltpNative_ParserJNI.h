@@ -10,15 +10,15 @@ extern "C" {
 /*
  * Class:     edu_hit_ir_ltpNative_ParserJNI
  * Method:    parserCreate
- * Signature: (Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserCreate
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserCreate
   (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     edu_hit_ir_ltpNative_ParserJNI
- * Method:    parserRarse
- * Signature: (Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;)I
+ * Method:    parserParse
+ * Signature: (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)I
  */
 JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserParse
   (JNIEnv *, jclass, jobject, jobject, jobject, jobject);

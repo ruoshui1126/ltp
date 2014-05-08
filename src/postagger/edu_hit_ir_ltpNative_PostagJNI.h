@@ -10,15 +10,15 @@ extern "C" {
 /*
  * Class:     edu_hit_ir_ltpNative_PostagJNI
  * Method:    postaggerCreate
- * Signature: (Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate
   (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     edu_hit_ir_ltpNative_PostagJNI
  * Method:    postaggerPostag
- * Signature: (Ljava/util/ArrayList;Ljava/util/ArrayList;)I
+ * Signature: (Ljava/util/List;Ljava/util/List;)I
  */
 JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerPostag
   (JNIEnv *, jclass, jobject, jobject);

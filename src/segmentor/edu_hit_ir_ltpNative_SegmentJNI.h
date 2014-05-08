@@ -10,23 +10,23 @@ extern "C" {
 /*
  * Class:     edu_hit_ir_ltpNative_SegmentJNI
  * Method:    segmentorCreate
- * Signature: (Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_SegmentJNI_segmentorCreate__Ljava_lang_String_2
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_SegmentJNI_segmentorCreate__Ljava_lang_String_2
   (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     edu_hit_ir_ltpNative_SegmentJNI
  * Method:    segmentorCreate
- * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)I
  */
-JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_SegmentJNI_segmentorCreate__Ljava_lang_String_2Ljava_lang_String_2
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_SegmentJNI_segmentorCreate__Ljava_lang_String_2Ljava_lang_String_2
   (JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     edu_hit_ir_ltpNative_SegmentJNI
  * Method:    segmentorSegment
- * Signature: (Ljava/lang/String;Ljava/util/ArrayList;)I
+ * Signature: (Ljava/lang/String;Ljava/util/List;)I
  */
 JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_SegmentJNI_segmentorSegment
   (JNIEnv *, jclass, jstring, jobject);
