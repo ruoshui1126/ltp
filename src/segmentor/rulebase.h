@@ -33,7 +33,8 @@ const unsigned HAVE_ENG_ON_RIGHT   = (1<<6);
 const unsigned HAVE_URI_ON_LEFT  = (1<<7);
 const unsigned HAVE_URI_ON_RIGHT   = (1<<8);
 
-static boost::regex engpattern("(([A-Za-z]+)([\\-'\\.][A-Za-z]+)*)");
+static boost::regex engpattern("([A-Za-z0-9\\.]*[A-Za-z\\-]((—||[\\-'\\.])[A-Za-z0-9]+)*)");
+//static boost::regex engpattern("(([A-Za-z]+)([\\-'\\.][A-Za-z]+)*)");
 static boost::regex uripattern("((https?|ftp|file)"
     "://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_|])");
 
@@ -44,12 +45,6 @@ static bool flags_clear_check(int * flags, int left, int right) {
   return true;
 }
 
-static bool dll_validity_check(const std::string & str) {
-  if(str.empty()) {
-    return false;
-  }
-  return true;
-}
 
 static void flags_color(int * flags, int left, int right, int color) {
   for (int i = left; i < right; ++ i) {

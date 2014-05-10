@@ -28,7 +28,6 @@ int DepSRL::LoadResource(const string &ConfigDir)
 
     m_prgModel = new maxent::ME_Model;
     tag = m_prgModel->load(ConfigDir + "/prg.model");
-
     if(!tag) {
       return 0;
     }

@@ -12,8 +12,16 @@ extern "C" {
  * Method:    postaggerCreate
  * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate__Ljava_lang_String_2
   (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     edu_hit_ir_ltpNative_PostagJNI
+ * Method:    postaggerCreate
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_PostagJNI_postaggerCreate__Ljava_lang_String_2Ljava_lang_String_2
+  (JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     edu_hit_ir_ltpNative_PostagJNI
