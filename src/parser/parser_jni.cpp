@@ -76,7 +76,7 @@ JNIEXPORT jint JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserParse
     env->CallBooleanMethod(array_deprels,list_add,tmp);
   }
 
-  return 0;
+  return len;
 }
 
 JNIEXPORT void JNICALL Java_edu_hit_ir_ltpNative_ParserJNI_parserRelease
