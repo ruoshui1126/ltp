@@ -44,6 +44,35 @@ public:
     }
   }
 
+  void natural_realloc(int features, int L, int dim) {
+    double * W_temp = new double[dim];
+    double * W_sum_temp = new double[dim];
+    int * W_time_temp = new int[dim];
+
+    for(int i = 0; i < dim; ++i) {
+      W_temp[i] = 0;
+      W_sum_temp[i] = 0;
+      W_time_temp[i] = 0;
+    }
+
+    int unigram_feature = features * L;
+    for(int i = 0; i < unigram_feature; ++i) {
+      W_temp[i] = _W[i];
+      W_time_temp[i] = 0;
+    }
+
+    for(int i = 0; i< L*L; ++i) {
+      W_temp[dim-i] = _W[_dim-i];
+    }
+
+    dealloc();
+    _dim = dim;
+    _W = W_temp;
+    _W_sum = W_temp;
+    _W_time = W_time_temp;
+
+  }
+
   void dealloc() {
     if (_W && _W == _W_sum) {
       delete [](_W);
@@ -82,6 +111,9 @@ public:
         ++ itx) {
       int idx = itx->first;
       int elapsed = now - _W_time[idx];
+      if(itx->second != 0.0) {
+       // std::cout<<"updateW idx = "<<idx<<" , "<<itx->second<<std::endl;
+      }
       double upd = scale * itx->second;
       double cur_val = _W[idx];
 

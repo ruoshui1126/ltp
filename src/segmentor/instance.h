@@ -114,6 +114,7 @@ public:
   }
 public:
   std::vector< std::string >  raw_forms;
+  std::vector< int >          natural;
   std::vector< std::string >  forms;
   std::vector< int >          chartypes;
   std::vector< std::string >  tags;

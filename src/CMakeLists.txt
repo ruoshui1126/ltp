@@ -14,16 +14,16 @@ add_subdirectory ("__util")
 add_subdirectory ("__xml4nlp")
 add_subdirectory ("splitsnt")
 add_subdirectory ("segmentor")
-add_subdirectory ("postagger")
-add_subdirectory ("ner")
-add_subdirectory ("parser")
-add_subdirectory ("srl")
-add_subdirectory ("__ltp_dll")
+#add_subdirectory ("postagger")
+#add_subdirectory ("ner")
+#add_subdirectory ("parser")
+#add_subdirectory ("srl")
+#add_subdirectory ("__ltp_dll")
 
 # mongoose server is not supported in windows
 if (NOT WIN32)
-add_subdirectory ("unittest")
-add_subdirectory ("server")
+#add_subdirectory ("unittest")
+#add_subdirectory ("server")
 endif()
 
 

@@ -106,10 +106,11 @@ public:
   FeatureSpaceIterator end() {
     return FeatureSpaceIterator(dicts + _num_dicts, _num_dicts);
   }
+public:
+  int _num_dicts;
 private:
   int _offset;
   int _num_labels;
-  int _num_dicts;
   utility::SmartMap<int> * dicts;
 };
 

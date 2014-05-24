@@ -374,6 +374,7 @@ public:
     out.write(reinterpret_cast<const char *>(&_len_key_buffer), sizeof(unsigned int));
     out.write(reinterpret_cast<const char *>(&_cap_buckets),  sizeof(unsigned int));
     out.write(reinterpret_cast<const char *>(_hash_buckets),  sizeof(int) * _cap_buckets);
+    out.write(reinterpret_cast<const char *>(_hash_buckets_volumn),  sizeof(int) * _cap_buckets);
     out.write(reinterpret_cast<const char *>(_hash_buffer),   sizeof(hash_node_t) * _num_entries);
     out.write(reinterpret_cast<const char *>(_key_buffer),    sizeof(char) * _len_key_buffer);
     out.write(reinterpret_cast<const char *>(_val_buffer),    sizeof(T) * _num_entries);
@@ -401,12 +402,14 @@ public:
     in.read(reinterpret_cast<char *>(&_cap_buckets),  sizeof(unsigned int));
 
     _hash_buckets   = new int[_cap_buckets];
+    _hash_buckets_volumn   = new int[_cap_buckets];
     _hash_buffer  = new hash_node_t[_num_entries];
     _key_buffer   = new char[_len_key_buffer];
     _val_buffer   = new T[_num_entries];
 
 
     in.read(reinterpret_cast<char *>(_hash_buckets),  sizeof(int) * _cap_buckets);
+    in.read(reinterpret_cast<char *>(_hash_buckets_volumn),  sizeof(int) * _cap_buckets);
     in.read(reinterpret_cast<char *>(_hash_buffer),   sizeof(hash_node_t) * _num_entries);
     in.read(reinterpret_cast<char *>(_key_buffer),    sizeof(char) * _len_key_buffer);
     in.read(reinterpret_cast<char *>(_val_buffer),    sizeof(T) * _num_entries);
@@ -538,9 +541,9 @@ protected:
       delete [](_hash_buffer);
       _hash_buffer = new_hash_buffer;
     }
-
     _latest_hash_node = _hash_buffer + _num_entries;
     _latest_val = _val_buffer + _num_entries;
+
     (*_latest_val) = val;
 
     _latest_hash_node->__key_off  = _latest_key - _key_buffer;

@@ -35,12 +35,15 @@ public:
 class Decoder {
 public:
   Decoder (int _L, rulebase::RuleBase & _base) : L(_L), base(_base) {}
-  void decode(Instance * inst);
+  void decode(Instance * inst, bool natural = false);
 
 private:
   void init_lattice(const Instance * inst);
   void viterbi_decode(const Instance * inst);
-  void get_result(Instance * inst);
+  void viterbi_decode_inner(const Instance * inst, int i, int l);
+  void natural_viterbi_decode(const Instance * inst);
+  bool segment_constrain(int natural, int l);
+  void get_result(Instance * inst, bool natural = false);
   void free_lattice();
 
 private:

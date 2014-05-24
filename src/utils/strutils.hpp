@@ -158,6 +158,45 @@ inline std::vector<std::string> split_by_sep(std::string str,
   return ret;
 }
 
+inline std::vector<std::string> split_for_natural(std::string str) {
+  std::vector<std::string> ret;
+
+  int len      = str.size();
+
+  while (str.size() > 0) {
+    size_t pos = std::string::npos;
+    pos = str.find("{{");
+
+    std::string token = str.substr(0, pos);
+    if(token.size()>0) {
+      ret.push_back(token);
+    }
+
+    if (pos == std::string::npos) {
+      str = "";
+    } else {
+      pos = pos + 2;
+      str = str.substr(pos);
+    }
+
+    pos = str.find("}}");
+
+    token = str.substr(0, pos);
+    if(token.size() > 0) {
+      ret.push_back(token);
+    }
+
+    if (pos == std::string::npos) {
+      str = "";
+    } else {
+      pos = pos + 2;
+      str = str.substr(pos);
+    }
+
+  }
+  return ret;
+}
+
 
 /**
  * Return a list of words of string str, the word are separated by

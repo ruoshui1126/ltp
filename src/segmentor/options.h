@@ -12,6 +12,8 @@ struct ModelOptions {
 
 struct TrainOptions {
   std::string       train_file;
+  std::string       natural_annotation_file;
+  std::string       model_file;
   std::string       holdout_file;
   std::string       model_name;
   std::string       algorithm;

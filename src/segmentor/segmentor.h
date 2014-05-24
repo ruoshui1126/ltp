@@ -32,7 +32,7 @@ private:
    *  @param[in]  file_name   the filename
    *  @return     bool        true on success, otherwise false
    */
-  bool read_instance( const char * file_name );
+  bool read_instance( const char * file_name, bool natural_annotation = false );
 
   /*
    * build tag sets, collect internal word map, record word frequency.
@@ -45,11 +45,16 @@ private:
    */
   void build_feature_space(void);
 
+  void add_feature_space(void);
+
   /*
    * the training process
    */
   void train(void);
 
+
+
+  void natural(void);
   /*
    * the evaluating process
    */
@@ -129,9 +134,11 @@ private:
   bool  __TRAIN__;
   bool  __TEST__;
   bool  __DUMP__;
+  bool  __NATURAL__;
 
 private:
   std::vector< Instance * > train_dat;
+  std::vector< Instance * > natural_dat;
 
 protected:
   Model *              model;

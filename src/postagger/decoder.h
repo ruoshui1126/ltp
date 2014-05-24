@@ -38,8 +38,10 @@ public:
   void decode(Instance * inst);
 private:
   void init_lattice(const Instance * inst);
+  void viterbi_decode_inner(const Instance * inst, int i, int l);
   void viterbi_decode_inner(const Instance * inst,int i,int l);
   void viterbi_decode(const Instance * inst);
+  bool segment_constrain(const Instance * inst, int l);
   void get_result(Instance * inst);
   void free_lattice();
 
