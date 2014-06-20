@@ -28,17 +28,17 @@ bool Decoder::segment_constrain(int natural, int l) {
     return true; 
   }
   else if(4 == natural) {
-    if(2 == l) {
+    if(3 == l) {
       return true;
     }
   }
   else if(5 == natural) {
-    if(0 == l || 2 == l) {
+    if(0 == l || 3 == l) {
       return true;
     }
   }
   else if(6 == natural) {
-    if(1 == l || 2 == l) {
+    if(1 == l || 3 == l) {
       return true;
     }
   }
@@ -130,6 +130,14 @@ void Decoder::get_result(Instance * inst, bool natural ) {
     if (best_item == NULL || (lattice[len-1][l]->score > best_item->score)) {
       best_item = lattice[len - 1][l];
     }
+  }
+
+  if(natural) {
+    inst->score_natural = best_item->score;
+  }
+
+  else {
+    inst->score_origin = best_item->score;
   }
 
   const LatticeItem * item = best_item;

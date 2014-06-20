@@ -40,6 +40,7 @@ public:
     }
 
     if (natural_annotation) {
+      inst->raw_sentence = line; 
       std::vector<std::string> words = split_for_natural(line);
       /*  std::cout<<"for sentence :"<<line<<std::endl;
       for(int i = 0; i < words.size(); i++) {

@@ -124,6 +124,9 @@ public:
   std::vector< std::string >  words;
   std::vector< std::string >  predicted_words;
   std::vector< int >          lexicon_match_state;
+  std::string                 raw_sentence;
+  double                      score_natural;
+  double                      score_origin;
 
   math::SparseVec       features;           /*< the gold features */
   math::SparseVec       predicted_features; /*< the predicted features */

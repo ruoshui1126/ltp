@@ -52,9 +52,8 @@ private:
    */
   void train(void);
 
-
-
   void natural(void);
+  void annotation(void);
   /*
    * the evaluating process
    */
@@ -135,6 +134,7 @@ private:
   bool  __TEST__;
   bool  __DUMP__;
   bool  __NATURAL__;
+  bool  __ANNOTATION__;
 
 private:
   std::vector< Instance * > train_dat;
