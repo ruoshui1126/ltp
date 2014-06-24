@@ -39,17 +39,19 @@ public:
 
 private:
   void init_lattice(const Instance * inst);
-  void viterbi_decode(const Instance * inst);
+  void viterbi_decode(const Instance * inst, bool use_natural = false);
   void viterbi_decode_inner(const Instance * inst, int i, int l);
   void natural_viterbi_decode(const Instance * inst);
   bool segment_constrain(int natural, int l);
-  void get_result(Instance * inst, bool natural = false);
+  void get_result(Instance * inst, bool use_natural = false);
   void free_lattice();
 
 private:
   int L;
 
   math::Mat< const LatticeItem * > lattice;
+  math::Mat< double > uni_scores;
+  math::Mat< double > bi_scores;
   rulebase::RuleBase base;
 
   void lattice_insert(const LatticeItem * &position,

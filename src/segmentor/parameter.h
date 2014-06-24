@@ -105,15 +105,12 @@ public:
     _W_time[idx]  = now;
   }
 
-  void add(const SparseVec & vec,bool t, int now, double scale = 1.) {
+  void add(const SparseVec & vec, int now, double scale = 1.) {
     for (SparseVec::const_iterator itx = vec.begin();
         itx != vec.end();
         ++ itx) {
       int idx = itx->first;
       int elapsed = now - _W_time[idx];
-      if(itx->second != 0.0&&t) {
-//        std::cout<<"updateW idx = "<<idx<<" , "<<itx->second<<std::endl;
-      }
       double upd = scale * itx->second;
       double cur_val = _W[idx];
 

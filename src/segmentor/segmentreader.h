@@ -40,13 +40,8 @@ public:
     }
 
     if (natural_annotation) {
-      inst->raw_sentence = line; 
+
       std::vector<std::string> words = split_for_natural(line);
-      /*  std::cout<<"for sentence :"<<line<<std::endl;
-      for(int i = 0; i < words.size(); i++) {
-        std::cout<<words[i]<<"	";
-      }
-      std::cout<<std::endl;*/
 
       int pre_size = 0;
       for(int i = 0; i < words.size(); ++i ) {
@@ -56,45 +51,18 @@ public:
 
         for(int j = 0; j < num_chars; ++j ) {
           if(1 == num_chars) {
-            inst->natural.push_back(4);
+            inst->natural_flag.push_back(4);
           } else {
             if(0 == j) {
-              inst->natural.push_back(5);
+              inst->natural_flag.push_back(5);
             } else if (num_chars - 1 == j) {
-              inst->natural.push_back(6);
+              inst->natural_flag.push_back(6);
             } else {
-              inst->natural.push_back(0);
+              inst->natural_flag.push_back(0);
             }
           }
         }
       }
-
-      if(inst->raw_forms.size()!=inst->natural.size()) {
-        std::cerr<<"raw size = "<<inst->raw_forms.size()<<std::endl;
-        for(int i = 0; i < inst->raw_forms.size(); ++i ) {
-          std::cerr<<inst->raw_forms[i]<<"	";
-        }
-        std::cerr<<"form size = "<<inst->forms.size()<<std::endl;
-
-        for(int i = 0; i < inst->forms.size(); ++i ) {
-          std::cerr<<inst->forms[i]<<"	";
-        }
-
-        std::cerr<<std::endl;
-        std::cerr<<"natural size = "<<inst->natural.size()<<std::endl;
-        for(int i = 0; i< inst->natural.size(); ++i ) {
-          std::cerr<<inst->natural[i]<<"	";
-        }
-        std::cerr<<std::endl;
-        return NULL;
-      }
-
-      /*for(int i = 0; i< inst->natural.size(); ++i ) {
-        std::cout<<inst->raw_forms[i]<<"= "<<inst->natural[i]<<"	";
-      }
-
-      std::cout<<std::endl;*/
- 
     return inst;
     }
 

@@ -4,16 +4,10 @@ namespace ltp {
 namespace segmentor {
 
 
-void Decoder::decode(Instance * inst, bool natural ) {
+void Decoder::decode(Instance * inst, bool use_natural ) {
   init_lattice(inst);
-  if(natural) {
-   // std::cout<<"natural viterbi"<<std::endl;
-    natural_viterbi_decode(inst);
-  } else {
-   // std::cout<<"normal viterbi"<<std::endl;
-    viterbi_decode(inst);
-  }
-  get_result(inst, natural);
+  viterbi_decode(inst, use_natural);
+  get_result(inst, use_natural);
   free_lattice();
 }
 
@@ -24,23 +18,9 @@ void Decoder::init_lattice(const Instance * inst) {
 }
 
 bool Decoder::segment_constrain(int natural, int l) {
-  if(0 == natural) {
+
+  if(0 == natural||(natural&(1<<l))) {
     return true; 
-  }
-  else if(4 == natural) {
-    if(3 == l) {
-      return true;
-    }
-  }
-  else if(5 == natural) {
-    if(0 == l || 3 == l) {
-      return true;
-    }
-  }
-  else if(6 == natural) {
-    if(1 == l || 3 == l) {
-      return true;
-    }
   }
 
   return false;
@@ -74,53 +54,18 @@ void Decoder::viterbi_decode_inner(const Instance * inst, int i, int l){
       }   //  end for if i == 0
  
 }
-void Decoder::natural_viterbi_decode(const Instance * inst) {
+void Decoder::viterbi_decode(const Instance * inst, bool use_natural) {
   int len = inst->size();
   for (int i = 0; i < len; ++ i) {
-//    std::cout<<inst->forms[i]<<" = "<<inst->natural[i]<<std::endl;
     for (int l = 0; l < L; ++ l) {
-      if(segment_constrain(inst->natural[i], l)) {
-  //      std::cout<<" label " <<l<<" decode"<<std::endl;
+      if(!use_natural||segment_constrain(inst->natural_flag[i], l)) {
         viterbi_decode_inner(inst, i ,l);
       }
     }
   }
 }
 
-void Decoder::viterbi_decode(const Instance * inst) {
-  int len = inst->size();
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      if (false == base.legal_emit(inst->chartypes[i], l)) {
-        continue;
-      }
-      if (i == 0) {
-        LatticeItem * item = new LatticeItem(i, l, inst->uni_scores[i][l], NULL);
-        lattice_insert(lattice[i][l], item);
-      } else {
-        for (int pl = 0; pl < L; ++ pl) {
-          if (false == base.legal_trans(pl, l)) {
-            continue;
-          }
-
-          double score = 0.;
-          const LatticeItem * prev = lattice[i-1][pl];
-
-          if (!prev) {
-            continue;
-          }
-
-          // std::cout << i << " " << pl << " " << l << std::endl;
-          score = inst->uni_scores[i][l] + inst->bi_scores[pl][l] + prev->score;
-          const LatticeItem * item = new LatticeItem(i, l, score, prev);
-          lattice_insert(lattice[i][l], item);
-        }
-      }   //  end for if i == 0
-    }
-  }
-}
-
-void Decoder::get_result(Instance * inst, bool natural ) {
+void Decoder::get_result(Instance * inst, bool use_natural ) {
   int len = inst->size();
   const LatticeItem * best_item = NULL;
   for (int l = 0; l < L; ++ l) {
@@ -132,48 +77,20 @@ void Decoder::get_result(Instance * inst, bool natural ) {
     }
   }
 
-  if(natural) {
-    inst->score_natural = best_item->score;
-  }
-
-  else {
-    inst->score_origin = best_item->score;
-  }
-
   const LatticeItem * item = best_item;
 
-  if(natural) {
-
-    //std::cout<<"#natural get result"<<std::endl;
-
+  if(use_natural) {
     inst->tagsidx.resize(len);
-  
     while (item) {
       inst->tagsidx[item->i] = item->l;
-      // std::cout << item->i << " " << item->l << std::endl;
       item = item->prev;
     }
-
-   /* std::cout<<"#tags:";
-    for(int i = 0; i < len; i++) {
-      std::cout<<inst->tagsidx[i]<<"	";
-    }
-    std::cout<<std::endl;*/
-
   } else {
-
-//    std::cout<<"#normal get result"<<std::endl;
     inst->predicted_tagsidx.resize(len);
     while (item) {
         inst->predicted_tagsidx[item->i] = item->l;
-        // std::cout << item->i << " " << item->l << std::endl;
         item = item->prev;
     }
-/*    std::cout<<"#tags:";
-    for(int i = 0; i < len; i++) {
-      std::cout<<inst->predicted_tagsidx[i]<<"	";
-    }
-    std::cout<<std::endl;*/
   }
 }
 

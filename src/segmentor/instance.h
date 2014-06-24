@@ -114,7 +114,6 @@ public:
   }
 public:
   std::vector< std::string >  raw_forms;
-  std::vector< int >          natural;
   std::vector< std::string >  forms;
   std::vector< int >          chartypes;
   std::vector< std::string >  tags;
@@ -124,9 +123,6 @@ public:
   std::vector< std::string >  words;
   std::vector< std::string >  predicted_words;
   std::vector< int >          lexicon_match_state;
-  std::string                 raw_sentence;
-  double                      score_natural;
-  double                      score_origin;
 
   math::SparseVec       features;           /*< the gold features */
   math::SparseVec       predicted_features; /*< the predicted features */
@@ -134,6 +130,8 @@ public:
   math::Mat< math::FeatureVector *> uni_features;
   math::Mat< double > uni_scores;
   math::Mat< double > bi_scores;
+
+  std::vector< unsigned int > natural_flag;
 };
 
 }     //  end for namespace segmentor
