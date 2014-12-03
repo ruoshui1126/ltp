@@ -24,11 +24,7 @@ int main(int argc, char * argv[]) {
   }
 
   void * engine = 0;
-  if (argc == 3) {
-    engine = segmentor_create_segmentor(argv[1], argv[2], NULL);
-  } else if (argc == 4) {
-    engine = segmentor_create_segmentor(argv[1], argv[2], argv[3]);
-  }
+  engine = segmentor_create_segmentor(argv[1]);
 
   if (!engine) {
     return -1;
@@ -42,7 +38,7 @@ int main(int argc, char * argv[]) {
   while (std::getline(std::cin, sentence, '\n')) {
     words.clear();
     if (sentence.size() == 0) { continue; }
-    int len = segmentor_customized_segment(engine, sentence, words);
+    int len = segmentor_customized_segment(engine, argv[2],NULL,sentence, words);
     for (int i = 0; i < len; ++ i) {
       std::cout << words[i];
       if (i+1 == len) std::cout <<std::endl;

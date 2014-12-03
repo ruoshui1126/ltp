@@ -245,6 +245,38 @@ int LTP::wordseg(XML4NLP & xml) {
   return 0;
 }
 
+int LTP::wordseg(std::string sent, std::vector<std::string> & words) {
+  // get the segmentor pointer
+  void * segmentor = m_ltpResource.GetSegmentor();
+  if (0 == segmentor) {
+    ERROR_LOG("in LTP::wordseg, failed to init a segmentor");
+    return kWordsegError;
+  }
+
+  if (0 == segmentor_segment(segmentor, sent, words)) {
+    ERROR_LOG("in LTP::wordseg, failed to perform word segment on \"%s\"",
+          sent.c_str());
+    return kWordsegError;
+  }
+
+  return 0;
+}
+int LTP::wordseg(std::string sent,const char * model_path, const char * lexicon_path, std::vector<std::string> & words) {
+  // get the segmentor pointer
+  void * segmentor = m_ltpResource.GetSegmentor();
+  if (0 == segmentor) {
+    ERROR_LOG("in LTP::wordseg, failed to init a segmentor");
+    return kWordsegError;
+  }
+
+  if (0 == segmentor_customized_segment(segmentor, model_path, lexicon_path, sent, words)) {
+    ERROR_LOG("in LTP::wordseg, failed to perform word segment on \"%s\"",
+          sent.c_str());
+    return kWordsegError;
+  }
+
+  return 0;
+}
 // integrate postagger into LTP
 int LTP::postag(XML4NLP & xml) {
   if ( xml.QueryNote(NOTE_POS) ) {

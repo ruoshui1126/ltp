@@ -75,6 +75,9 @@ public:
    */
   int wordseg(XML4NLP & xml);
 
+  int wordseg(std::string sent, std::vector<std::string> & words);
+  int wordseg(std::string sent, const char * model_path, const char * lexicon_path, std::vector<std::string> & words);
+
   /*
    * do postagging
    *

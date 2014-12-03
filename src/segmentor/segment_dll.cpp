@@ -4,11 +4,17 @@
 //#include "instance.h"
 #include "utils/logging.hpp"
 #include "utils/codecs.hpp"
+#include "utils/cache.hpp"
 
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <memory>
+#include <stdio.h>
 
 namespace seg = ltp::segmentor;
 
+static ltp::utility::LRUCache<std::string, std::shared_ptr<seg::Model> > cache(20);
 class SegmentorWrapper : public seg::CustomizedSegmentor{
 public:
   SegmentorWrapper()
@@ -25,6 +31,13 @@ public:
       return false;
     }
 
+    beg_tag0 = seg::CustomizedSegmentor::baseline_model->labels.index( seg::__b__ );
+    beg_tag1 = seg::CustomizedSegmentor::baseline_model->labels.index( seg::__s__ );
+
+    if (!rule) {
+      rule = new seg::rulebase::RuleBase(seg::CustomizedSegmentor::baseline_model->labels);
+    }
+
     return true;
   }
 
@@ -33,11 +46,19 @@ public:
       return false;
     }
 
+    beg_tag0 = seg::CustomizedSegmentor::model->labels.index( seg::__b__ );
+    beg_tag1 = seg::CustomizedSegmentor::model->labels.index( seg::__s__ );
+
+    if (!rule) {
+      rule = new seg::rulebase::RuleBase(seg::CustomizedSegmentor::model->labels);
+    }
+
     return true;
   }
 
   int segment(const char * str,
       std::vector<std::string> & words) {
+    std::cout<<"in segment"<<std::endl;
     seg::Instance * inst = new seg::Instance;
     // ltp::strutils::codecs::decode(str, inst->forms);
     int ret = seg::rulebase::preprocess(str,
@@ -64,6 +85,7 @@ public:
     seg::Segmentor::build_words(inst, inst->predicted_tagsidx,
         words, beg_tag0, beg_tag1);
 
+    std::cout<<"words size = "<<words.size();
     delete ctx;
     delete scm;
     delete inst;
@@ -73,6 +95,7 @@ public:
   int customized_segment(seg::Model * customized_model,
               const char * str,
               std::vector<std::string> & words) {
+    std::cout<<"in customized segment"<<std::endl;
     seg::Instance * inst = new seg::Instance;
     int ret = seg::rulebase::preprocess(str,
         inst->raw_forms,
@@ -107,6 +130,7 @@ public:
     delete base_ctx;
     delete scm;
     delete inst;
+    std::cout<<"words size = "<<words.size()<<std::endl;
     return words.size();
   }
 
@@ -133,21 +157,26 @@ public:
 
     return len;
   }
-private:
-  seg::Model* load_model(const char * model_path, const char * lexicon_path = NULL) {
+  static seg::Model* load_model(const char * model_path, const char * lexicon_path = NULL) {
     if ((NULL == model_path)&&(NULL == lexicon_path)) {
       return NULL;
     }
 
     seg::Model *mdl = new seg::Model;
 
-    std::ifstream mfs(model_path, std::ifstream::binary);
+    if (NULL!=model_path) {
+      std::ifstream mfs(model_path, std::ifstream::binary);
 
-    if (mfs) {
-      if (!mdl->load(mfs)) {
-        delete mdl;
-        mdl = 0;
-        return NULL;
+      if (mfs) {
+        if (!mdl->load(mfs)) {
+          delete mdl;
+          mdl = 0;
+          return NULL;
+        }
+      } else {
+          delete mdl;
+          mdl = 0;
+          return NULL;
       }
     }
 
@@ -163,14 +192,11 @@ private:
           }
           mdl->external_lexicon.set(buffer.c_str(), true);
         }
+      } else {
+        delete mdl;
+        mdl = 0;
+        return NULL;
       }
-    }
-
-    beg_tag0 = mdl->labels.index( seg::__b__ );
-    beg_tag1 = mdl->labels.index( seg::__s__ );
-
-    if (!rule) {
-      rule = new seg::rulebase::RuleBase(mdl->labels);
     }
 
     return mdl;
@@ -251,8 +277,24 @@ int segmentor_customized_segment(void * parser,
   if (line.empty()) {
     return 0;
   }
-
+  char hash[500];
+  TRACE_LOG("model_path = %s",model_path);
+  TRACE_LOG("lexicon_path = %s",lexicon_path);
+  sprintf(hash, "M=%s L=%s", model_path, lexicon_path);
+  std::string hash_str(hash);
+  TRACE_LOG("hash = %s",hash_str.c_str());
+  seg::Model * customized_model = cache.get(hash_str).get();
+  if (!customized_model) {
+    TRACE_LOG("doesnot have. load now!");
+    customized_model = SegmentorWrapper::load_model(model_path, lexicon_path);
+    if (!customized_model) {
+      return 0;
+    }
+    cache.put(hash_str, std::shared_ptr<seg::Model>(customized_model));
+  } else {
+    TRACE_LOG("yes it have");
+  }
   SegmentorWrapper * wrapper = 0;
   wrapper = reinterpret_cast<SegmentorWrapper *>(parser);
-  return wrapper->customized_segment(model_path, lexicon_path, line.c_str(), words);
+  return wrapper->customized_segment(customized_model, line.c_str(), words);
 }

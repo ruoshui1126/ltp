@@ -124,6 +124,9 @@ static int Service(struct mg_connection *conn) {
   char *sentence;
   char type[10];
   char xml[10];
+  char cus[10];
+  char m_path[200];
+  char l_path[200];
 
   string str_post_data;
   string str_type;
@@ -163,6 +166,12 @@ static int Service(struct mg_connection *conn) {
                xml,
                sizeof(xml) - 1);
 
+    mg_get_var(str_post_data.c_str(),
+               str_post_data.size(),
+               "c",
+               cus,
+               sizeof(cus) - 1);
+
     string strSentence = sentence;
 
     // validation check
@@ -194,62 +203,53 @@ static int Service(struct mg_connection *conn) {
 
     TRACE_LOG("Input sentence is: %s", strSentence.c_str());
 
-    //Get a XML4NLP instance here.
-    XML4NLP  xml4nlp;
+    int ret;
+    std::vector<std::string> words;
+    if (strcmp(cus,"y")==0) {
+      mg_get_var(str_post_data.c_str(),
+                 str_post_data.size(),
+                 "m",
+                  m_path,
+                 sizeof(m_path) - 1);
 
-    if(str_xml == "y") {
-      if (-1 == xml4nlp.LoadXMLFromString(strSentence)) {
-        ErrorResponse(conn, kXmlParseError);
-        return 0;
+      std::cout<<"m_path = "<<m_path<<std::endl;
+      mg_get_var(str_post_data.c_str(),
+                 str_post_data.size(),
+                 "l",
+                  l_path,
+                 sizeof(l_path) - 1);
+      std::cout<<"l_path = "<<l_path<<" L="<<strlen(l_path)<<std::endl;
+      char * model_path = m_path;
+      if (strlen(m_path)==0) {
+        model_path = NULL;
       }
-      // move sentence validation check into each module
+      char * lexicon_path = l_path;
+      if (strlen(l_path)==0) {
+        lexicon_path = NULL;
+      }
+      ret = engine->wordseg(strSentence, model_path, lexicon_path, words);
     } else {
-      xml4nlp.CreateDOMFromString(strSentence);
+      ret = engine->wordseg(strSentence, words);
     }
-
-    TRACE_LOG("XML Creation is done.");
-
-    if(str_type == "ws"){
-      int ret = engine->wordseg(xml4nlp);
-      if (0 != ret) {
-        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
-        return 0;
-      }
-    } else if(str_type == "pos"){
-      int ret = engine->postag(xml4nlp);
-      if (0 != ret) {
-        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
-        return 0;
-      }
-    } else if(str_type == "ner"){
-      int ret = engine->ner(xml4nlp);
-      if (0 != ret) {
-        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
-        return 0;
-      }
-    } else if(str_type == "dp"){
-      int ret = engine->parser(xml4nlp);
-      if (0 != ret) {
-        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
-        return 0;
-      }
-    } else { // srl or all
-      int ret = engine->srl(xml4nlp);
-      if (0 != ret) {
-        ErrorResponse(conn, static_cast<ErrorCodes>(ret));
-        return 0;
-      }
+    std::cout<<"ret = "<<ret<<std::endl;
+    if (0 != ret) {
+      ErrorResponse(conn, static_cast<ErrorCodes>(ret));
+      return 0;
     }
-
     TRACE_LOG("Analysis is done.");
+    std::string strResult = "";
 
-    string strResult;
-    xml4nlp.SaveDOM(strResult);
+    for (int j = 0; j < words.size(); ++j) {
+      strResult += words[j];
+      if (j!=words.size()-1) {
+        strResult += "\t";
+      }
+    }
+    strResult+="\n";
 
     strResult = "HTTP/1.1 200 OK\r\n\r\n" + strResult;
     mg_printf(conn, "%s", strResult.c_str());
 
-    xml4nlp.ClearDOM();
   }
   return 1;
 }
