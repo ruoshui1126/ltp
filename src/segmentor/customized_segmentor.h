@@ -34,7 +34,9 @@ protected:
   void calculate_scores(const Instance * inst, bool use_avg);
 
   //!
-  void calculate_scores(Model * mdl, Model * base_mdl, const Instance* inst, const DecodeContext* ctx, const DecodeContext* base_ctx, bool use_avg, ScoreMatrix* scm);
+  void calculate_scores(Model * mdl, Model * base_mdl, const Instance* inst, const DecodeContext* ctx, const DecodeContext* base_ctx, bool use_avg, ScoreMatrix* scm, ScoreMatrix* base_scm);
+
+  void add_score_matrix(ScoreMatrix *a, ScoreMatrix *b);
 
   //!
   void collect_correct_and_predicted_features(Instance * inst);
@@ -69,6 +71,7 @@ protected:
   CustomizedTrainOptions train_opts;
   CustomizedTestOptions test_opts;
   //CustomizedDumpOptions dump_opts;
+  ScoreMatrix * baseline_score_matrix;
 };
 
 } // end for namespace segmentor

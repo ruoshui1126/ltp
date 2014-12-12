@@ -327,7 +327,6 @@ Segmentor::extract_features(const Instance * inst,
     bool create) {
   const int N = Extractor::num_templates();
   const int L = mdl->num_labels();
-
   std::vector< utils::StringVec > cache;
   std::vector< int > cache_again;
 
@@ -432,7 +431,7 @@ Segmentor::build_feature_space(void) {
 
 void
 Segmentor::calculate_scores(const Instance * inst, const Model* mdl,
-    const DecodeContext* ctx, bool use_avg, ScoreMatrix* scm) {
+    const DecodeContext* ctx, bool use_avg, ScoreMatrix* scm, int end_time) {
   int len = inst->size();
   int L = mdl->num_labels();
 
@@ -445,21 +444,34 @@ Segmentor::calculate_scores(const Instance * inst, const Model* mdl,
       if (!fv) {
         continue;
       }
-      scm->uni_scores[i][l] = mdl->param.dot(ctx->uni_features[i][l], use_avg);
+
+      if (use_avg) {
+          scm->uni_scores[i][l] = mdl->param.dot_flush_time(fv,
+              mdl->end_time,
+              end_time);
+      } else {
+        scm->uni_scores[i][l] = mdl->param.dot(ctx->uni_features[i][l], false);
+      }
     }
   }
 
   for (int pl = 0; pl < L; ++ pl) {
     for (int l = 0; l < L; ++ l) {
       int idx = mdl->space.index(pl, l);
-      scm->bi_scores[pl][l] = mdl->param.dot(idx, use_avg);
+      if (use_avg) {
+        scm->bi_scores[pl][l] = mdl->param.dot_flush_time(idx,
+            mdl->end_time,
+            end_time);
+      } else {
+        scm->bi_scores[pl][l] = mdl->param.dot(idx, false);
+      }
     }
   }
 }
 
 void
 Segmentor::calculate_scores(const Instance* inst, bool use_avg) {
-  calculate_scores(inst, model, decode_context, use_avg, score_matrix);
+  calculate_scores(inst, model, decode_context, use_avg, score_matrix, model->end_time);
 }
 
 void
