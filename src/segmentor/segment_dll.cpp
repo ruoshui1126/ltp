@@ -58,7 +58,6 @@ public:
 
   int segment(const char * str,
       std::vector<std::string> & words) {
-    std::cout<<"in segment"<<std::endl;
     seg::Instance * inst = new seg::Instance;
     // ltp::strutils::codecs::decode(str, inst->forms);
     int ret = seg::rulebase::preprocess(str,
@@ -76,7 +75,7 @@ public:
     seg::ScoreMatrix* scm = new seg::ScoreMatrix;
     seg::Segmentor::build_lexicon_match_state(seg::CustomizedSegmentor::baseline_model, inst);
     seg::Segmentor::extract_features(inst, seg::CustomizedSegmentor::baseline_model, ctx);
-    seg::Segmentor::calculate_scores(inst, seg::CustomizedSegmentor::baseline_model, ctx, true, scm);
+    seg::Segmentor::calculate_scores(inst, seg::CustomizedSegmentor::baseline_model, ctx, true, scm, seg::CustomizedSegmentor::baseline_model->end_time);
 
     // allocate a new decoder so that the segmentor support multithreaded
     // decoding. this modification was committed by niuox
@@ -85,7 +84,6 @@ public:
     seg::Segmentor::build_words(inst, inst->predicted_tagsidx,
         words, beg_tag0, beg_tag1);
 
-    std::cout<<"words size = "<<words.size();
     delete ctx;
     delete scm;
     delete inst;
@@ -95,7 +93,6 @@ public:
   int customized_segment(seg::Model * customized_model,
               const char * str,
               std::vector<std::string> & words) {
-    std::cout<<"in customized segment"<<std::endl;
     seg::Instance * inst = new seg::Instance;
     int ret = seg::rulebase::preprocess(str,
         inst->raw_forms,
@@ -111,6 +108,7 @@ public:
     seg::DecodeContext* ctx = new seg::DecodeContext;
     seg::DecodeContext* base_ctx = new seg::DecodeContext;
     seg::ScoreMatrix* scm = new seg::ScoreMatrix;
+    seg::ScoreMatrix* base_scm = new seg::ScoreMatrix;
     seg::CustomizedSegmentor::build_lexicon_match_state(customized_model, seg::CustomizedSegmentor::baseline_model, inst);
     seg::Segmentor::extract_features(inst, customized_model, ctx);
     seg::Segmentor::extract_features(inst, seg::CustomizedSegmentor::baseline_model, base_ctx);
@@ -120,17 +118,18 @@ public:
         ctx,
         base_ctx,
         true,
-        scm);
+        scm,
+        base_scm);
 
-    seg::Decoder decoder(customized_model->num_labels(), *rule);
+    seg::Decoder decoder(seg::CustomizedSegmentor::baseline_model->num_labels(), *rule);
     decoder.decode(inst, scm);
     seg::Segmentor::build_words(inst, inst->predicted_tagsidx, words, beg_tag0, beg_tag1);
 
     delete ctx;
     delete base_ctx;
     delete scm;
+    delete base_scm;
     delete inst;
-    std::cout<<"words size = "<<words.size()<<std::endl;
     return words.size();
   }
 
@@ -198,6 +197,10 @@ public:
         return NULL;
       }
     }
+
+    /*if (lexicon_path!=NULL&&model_path==NULL) {
+      mdl->end_time = seg::CustomizedSegmentor::baseline_model->end_time;
+    }*/
 
     return mdl;
   }
@@ -278,21 +281,21 @@ int segmentor_customized_segment(void * parser,
     return 0;
   }
   char hash[500];
-  TRACE_LOG("model_path = %s",model_path);
-  TRACE_LOG("lexicon_path = %s",lexicon_path);
+  //TRACE_LOG("model_path = %s",model_path);
+  //TRACE_LOG("lexicon_path = %s",lexicon_path);
   sprintf(hash, "M=%s L=%s", model_path, lexicon_path);
   std::string hash_str(hash);
-  TRACE_LOG("hash = %s",hash_str.c_str());
+  //TRACE_LOG("hash = %s",hash_str.c_str());
   seg::Model * customized_model = cache.get(hash_str).get();
   if (!customized_model) {
-    TRACE_LOG("doesnot have. load now!");
+    //TRACE_LOG("doesnot have. load now!");
     customized_model = SegmentorWrapper::load_model(model_path, lexicon_path);
     if (!customized_model) {
       return 0;
     }
     cache.put(hash_str, std::shared_ptr<seg::Model>(customized_model));
   } else {
-    TRACE_LOG("yes it have");
+    //TRACE_LOG("yes it have");
   }
   SegmentorWrapper * wrapper = 0;
   wrapper = reinterpret_cast<SegmentorWrapper *>(parser);

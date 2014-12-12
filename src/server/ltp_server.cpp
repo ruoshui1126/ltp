@@ -212,13 +212,11 @@ static int Service(struct mg_connection *conn) {
                   m_path,
                  sizeof(m_path) - 1);
 
-      std::cout<<"m_path = "<<m_path<<std::endl;
       mg_get_var(str_post_data.c_str(),
                  str_post_data.size(),
                  "l",
                   l_path,
                  sizeof(l_path) - 1);
-      std::cout<<"l_path = "<<l_path<<" L="<<strlen(l_path)<<std::endl;
       char * model_path = m_path;
       if (strlen(m_path)==0) {
         model_path = NULL;
@@ -231,7 +229,6 @@ static int Service(struct mg_connection *conn) {
     } else {
       ret = engine->wordseg(strSentence, words);
     }
-    std::cout<<"ret = "<<ret<<std::endl;
     if (0 != ret) {
       ErrorResponse(conn, static_cast<ErrorCodes>(ret));
       return 0;

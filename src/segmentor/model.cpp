@@ -9,7 +9,8 @@ namespace ltp {
 namespace segmentor {
 
 Model::Model() :
-  full(false) {
+  full(false),
+ end_time(0) {
 }
 
 Model::~Model() {

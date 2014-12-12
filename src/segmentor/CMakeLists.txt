@@ -40,9 +40,6 @@ link_directories ( ${LIBRARY_OUTPUT_PATH} )
 # -----------------------------------------------
 add_executable (otcws otcws.cpp ${segment_SRC})
 
-add_executable (test_cache test.cpp model.cpp featurespace.cpp extractor.cpp)
-set_target_properties(test_cache PROPERTIES OUTPUT_NAME test_cache RUNTIME_OUTPUT_DIRECTORY ${TOOLS_DIR}/train/)
-
 target_link_libraries (otcws boost_regex_static_lib)
 
 set_target_properties (otcws

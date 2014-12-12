@@ -25,12 +25,14 @@ namespace utils = ltp::utility;
 
 CustomizedSegmentor::CustomizedSegmentor()
   : baseline_model(0),
-  baseline_decode_context(0){
+  baseline_decode_context(0),
+  baseline_score_matrix(0) {
 }
 
 CustomizedSegmentor::CustomizedSegmentor(utils::ConfigParser& cfg)
   : baseline_model(0),
-  baseline_decode_context(0){
+  baseline_decode_context(0),
+  baseline_score_matrix(0){
   train_opt = new CustomizedTrainOptions;
   test_opt = new CustomizedTestOptions;
   dump_opt = new CustomizedDumpOptions;
@@ -44,6 +46,10 @@ CustomizedSegmentor::~CustomizedSegmentor() {
 
   if (baseline_decode_context) {
     delete baseline_decode_context;
+  }
+
+  if (baseline_score_matrix) {
+    delete baseline_score_matrix;
   }
 }
 
@@ -162,61 +168,49 @@ CustomizedSegmentor::extract_features(const Instance* inst, bool create) {
 
 void
 CustomizedSegmentor::calculate_scores(const Instance* inst, bool use_avg) {
-  calculate_scores(model, baseline_model, inst, decode_context, baseline_decode_context, use_avg, score_matrix);
+  calculate_scores(model, baseline_model, inst, decode_context, baseline_decode_context, use_avg, score_matrix, baseline_score_matrix);
+}
+
+void
+CustomizedSegmentor::add_score_matrix(ScoreMatrix * a, ScoreMatrix *b) {
+  if (a->uni_scores.total_size()!=b->uni_scores.total_size()) {
+    return ;
+  }
+
+  int len = a->uni_scores.nrows();
+  int L = a->uni_scores.ncols();
+
+  for (int i = 0; i < len; ++i) {
+    for (int l = 0; l < L; ++l) {
+      a->uni_scores[i][l] += b->uni_scores[i][l];
+    }
+  }
+
+  for (int pl = 0; pl < L; ++pl) {
+    for (int l = 0; l < L; ++l) {
+      a->bi_scores[pl][l] += b->bi_scores[pl][l];
+    }
+  }
+
 }
 void
-CustomizedSegmentor::calculate_scores(Model * mdl, Model * base_mdl, const Instance * inst, const DecodeContext* ctx, const DecodeContext * base_ctx, bool use_avg, ScoreMatrix* scm) {
+CustomizedSegmentor::calculate_scores(Model * mdl, Model * base_mdl, const Instance * inst, const DecodeContext* ctx, const DecodeContext * base_ctx, bool use_avg, ScoreMatrix* scm, ScoreMatrix * base_scm) {
   //bool use_avg = 0;
-  int len = inst->size();
-  int L = mdl->num_labels();
+  Segmentor::calculate_scores(inst,
+      base_mdl,
+      base_ctx,
+      use_avg,
+      scm,
+      mdl->end_time > base_mdl->end_time? mdl->end_time:base_mdl->end_time);
 
-  scm->uni_scores.resize(len, L);
-  scm->uni_scores = NEG_INF;
-  scm->bi_scores.resize(L, L);
-  scm->bi_scores = NEG_INF;
+  Segmentor::calculate_scores(inst,
+      mdl,
+      ctx,
+      use_avg,
+      base_scm,
+      mdl->end_time);
 
-  for (int i = 0; i < len; ++ i) {
-    for (int l = 0; l < L; ++ l) {
-      math::FeatureVector * fv = base_ctx->uni_features[i][l];
-      if (!fv) {
-        continue;
-      }
-
-      if(!use_avg) {
-        scm->uni_scores[i][l] = base_mdl->param.dot(fv, false);
-      } else {
-        scm->uni_scores[i][l] = base_mdl->param.dot_flush_time(fv,
-            base_mdl->end_time,
-            mdl->end_time);
-      }
-
-      fv = ctx->uni_features[i][l];
-      if (!fv) {
-        continue;
-      }
-      scm->uni_scores[i][l] += mdl->param.dot(fv,
-          use_avg);
-      //std::cout<<"uni_scores["<<i<<"]["<<l<<"]="<<inst->uni_scores[i][l]<<std::endl;
-    }
-  }
-
-  for (int pl = 0; pl < L; ++ pl) {
-    for (int l = 0; l < L; ++ l) {
-      int idx = base_mdl->space.index(pl, l);
-
-      if(!use_avg) {
-        scm->bi_scores[pl][l] = base_mdl->param.dot(idx, false);
-      } else {
-        scm->bi_scores[pl][l] = base_mdl->param.dot_flush_time(idx, 
-            base_mdl->end_time,
-            mdl->end_time);
-      }
-
-      idx = mdl->space.index(pl, l);
-      scm->bi_scores[pl][l] += mdl->param.dot(idx, use_avg);
-      //std::cout<<"bi_scores["<<pl<<"]["<<l<<"]="<<inst->bi_scores[pl][l]<<std::endl;
-    }
-  }
+  add_score_matrix(scm, base_scm);
 }
 
 void
@@ -252,6 +246,7 @@ CustomizedSegmentor::train_setup() {
   }
 
   baseline_decode_context = new DecodeContext;
+  baseline_score_matrix = new ScoreMatrix;
   baseline_model = new Model;
   if (!baseline_model->load(mfs)) {
     ERROR_LOG("Failed to load baseline model");
@@ -299,8 +294,7 @@ CustomizedSegmentor::train_averaged_perceptron() {
 
 bool
 CustomizedSegmentor::test_setup() {
-  const char * baseline_model_file =
-    static_cast<CustomizedTestOptions *>(test_opt)->baseline_model_file.c_str();
+  const char * baseline_model_file = static_cast<CustomizedTestOptions *>(test_opt)->baseline_model_file.c_str();
 
   std::ifstream mfs(baseline_model_file, std::ifstream::binary);
   if(!mfs) {
@@ -314,6 +308,7 @@ CustomizedSegmentor::test_setup() {
     return false;
   }
   baseline_decode_context = new DecodeContext;
+  baseline_score_matrix = new ScoreMatrix;
 
   return true;
 }

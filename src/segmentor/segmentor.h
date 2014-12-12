@@ -190,7 +190,8 @@ protected:
       const Model* mdl,
       const DecodeContext* ctx,
       bool use_avg,
-      ScoreMatrix* scm);
+      ScoreMatrix* scm,
+      int end_time);
 
 
   /**
