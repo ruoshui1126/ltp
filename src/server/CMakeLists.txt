@@ -9,12 +9,10 @@ include_directories (./
     ${THIRDPARTY_DIR}/tinyxml)
 
 set (ltp_server_SRC           ltp_server.cpp mongoose.c mongoose.h)
-set (ltp_cws_server_SRC       ltp_cws_server.cpp mongoose.c mongoose.h)
 
 link_directories ( ${LIBRARY_OUTPUT_PATH} )
 
 add_executable (ltp_server     ${ltp_server_SRC})
-add_executable (ltp_cws_server ${ltp_cws_server_SRC})
 
 set (ltp_server_LIBS
     maxent_static_lib
@@ -32,5 +30,3 @@ set (ltp_server_LIBS
     boost_regex_static_lib)
 
 target_link_libraries(ltp_server ${ltp_server_LIBS})
-target_link_libraries(ltp_cws_server ${ltp_server_LIBS})
-

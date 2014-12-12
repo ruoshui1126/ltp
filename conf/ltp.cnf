@@ -1,5 +1,5 @@
 # resources to be loaded, valid value includes: ws, pos, ner, dp, srl
 target = ws
-segmentor-model = /users1/bhan/individualization/custom/pku/seg.29.model
+segmentor-model = models/seg.4.model
 #segmentor-model = /users1/bhan/segmentor_experiment/dll_exame/ltp/ltp_data/cws.model
 
