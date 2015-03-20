@@ -125,6 +125,7 @@ static int Service(struct mg_connection *conn) {
   char type[10];
   char xml[10];
   char cus[10];
+  char del[10];
   char m_path[200];
   char l_path[200];
 
@@ -171,6 +172,37 @@ static int Service(struct mg_connection *conn) {
                "c",
                cus,
                sizeof(cus) - 1);
+
+    mg_get_var(str_post_data.c_str(),
+               str_post_data.size(),
+               "d",
+               del,
+               sizeof(del) - 1);
+
+    if (strcmp(del,"y")==0) {
+      mg_get_var(str_post_data.c_str(),
+                 str_post_data.size(),
+                 "m",
+                  m_path,
+                 sizeof(m_path) - 1);
+
+      mg_get_var(str_post_data.c_str(),
+                 str_post_data.size(),
+                 "l",
+                  l_path,
+                 sizeof(l_path) - 1);
+      char * model_path = m_path;
+      if (strlen(m_path)==0) {
+        model_path = NULL;
+      }
+      char * lexicon_path = l_path;
+      if (strlen(l_path)==0) {
+        lexicon_path = NULL;
+      }
+      engine->release_cache(model_path, lexicon_path);
+      mg_printf(conn, "HTTP/1.1 200 OK\r\n\r\n");
+      return 1;
+    }
 
     string strSentence = sentence;
 
@@ -225,7 +257,11 @@ static int Service(struct mg_connection *conn) {
       if (strlen(l_path)==0) {
         lexicon_path = NULL;
       }
-      ret = engine->wordseg(strSentence, model_path, lexicon_path, words);
+      if (model_path || lexicon_path) {
+        ret = engine->wordseg(strSentence, model_path, lexicon_path, words);
+      } else {
+        ret = engine->wordseg(strSentence, words);
+    }
     } else {
       ret = engine->wordseg(strSentence, words);
     }

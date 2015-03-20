@@ -263,6 +263,23 @@ int segmentor_segment(void * segmentor,
   return wrapper->segment(str.c_str(), words);
 }
 
+void segmentor_release_cache(const char * model_path, const char * lexicon_path) {
+
+  char hash[500];
+  sprintf(hash, "M=%s L=%s", model_path, lexicon_path);
+  TRACE_LOG("hash = %s",hash);
+  cache.del(std::string(hash));
+  
+  sprintf(hash, "M=%s L=%s", (char *)NULL, lexicon_path);
+  TRACE_LOG("hash = %s",hash);
+  cache.del(std::string(hash));
+
+  sprintf(hash, "M=%s L=%s", model_path, (char *)NULL);
+  TRACE_LOG("hash = %s",hash);
+  cache.del(std::string(hash));
+
+}
+
 int segmentor_customized_segment(void * segmentor,
                                  const std::string & str,
                                  std::vector<std::string> & words) {
@@ -272,6 +289,7 @@ int segmentor_customized_segment(void * segmentor,
   SegmentorWrapper * wrapper = reinterpret_cast<SegmentorWrapper*>(segmentor);
   return wrapper->customized_segment(str, words);
 }
+
 int segmentor_customized_segment(void * parser,
                       const char * model_path,
                       const char * lexicon_path,
@@ -281,21 +299,21 @@ int segmentor_customized_segment(void * parser,
     return 0;
   }
   char hash[500];
-  //TRACE_LOG("model_path = %s",model_path);
-  //TRACE_LOG("lexicon_path = %s",lexicon_path);
+  TRACE_LOG("model_path = %s",model_path);
+  TRACE_LOG("lexicon_path = %s",lexicon_path);
   sprintf(hash, "M=%s L=%s", model_path, lexicon_path);
   std::string hash_str(hash);
-  //TRACE_LOG("hash = %s",hash_str.c_str());
+  TRACE_LOG("hash = %s",hash_str.c_str());
   seg::Model * customized_model = cache.get(hash_str).get();
   if (!customized_model) {
-    //TRACE_LOG("doesnot have. load now!");
+    TRACE_LOG("doesnot have. load now!");
     customized_model = SegmentorWrapper::load_model(model_path, lexicon_path);
     if (!customized_model) {
       return 0;
     }
     cache.put(hash_str, std::shared_ptr<seg::Model>(customized_model));
   } else {
-    //TRACE_LOG("yes it have");
+    TRACE_LOG("yes it have");
   }
   SegmentorWrapper * wrapper = 0;
   wrapper = reinterpret_cast<SegmentorWrapper *>(parser);

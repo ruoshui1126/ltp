@@ -74,6 +74,7 @@ public:
    *  @return         int   0 on success, otherwise -1
    */
   int wordseg(XML4NLP & xml);
+  void release_cache(const char * model_path, const char * lexicon_path);
 
   int wordseg(std::string sent, std::vector<std::string> & words);
   int wordseg(std::string sent, const char * model_path, const char * lexicon_path, std::vector<std::string> & words);

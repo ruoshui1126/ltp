@@ -85,6 +85,17 @@ public:
     else return NULL;
   }
 
+  void del(K key)
+  {
+    LRUCacheEntry<K,T>* node = _mapping[key];
+    if(node)
+    {
+      detach(node);
+      _mapping.erase(node->key);
+      _freeEntries.push_back(node);
+    }
+  }
+
 private:
   void detach(LRUCacheEntry<K,T>* node)
   {

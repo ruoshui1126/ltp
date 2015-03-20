@@ -261,6 +261,11 @@ int LTP::wordseg(std::string sent, std::vector<std::string> & words) {
 
   return 0;
 }
+
+void LTP::release_cache(const char * model_path, const char * lexicon_path) {
+  segmentor_release_cache(model_path, lexicon_path);
+}
+
 int LTP::wordseg(std::string sent,const char * model_path, const char * lexicon_path, std::vector<std::string> & words) {
   // get the segmentor pointer
   void * segmentor = m_ltpResource.GetSegmentor();
