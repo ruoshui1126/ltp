@@ -263,23 +263,6 @@ int segmentor_segment(void * segmentor,
   return wrapper->segment(str.c_str(), words);
 }
 
-void segmentor_release_cache(const char * model_path, const char * lexicon_path) {
-
-  char hash[500];
-  sprintf(hash, "M=%s L=%s", model_path, lexicon_path);
-  TRACE_LOG("hash = %s",hash);
-  cache.del(std::string(hash));
-  
-  sprintf(hash, "M=%s L=%s", (char *)NULL, lexicon_path);
-  TRACE_LOG("hash = %s",hash);
-  cache.del(std::string(hash));
-
-  sprintf(hash, "M=%s L=%s", model_path, (char *)NULL);
-  TRACE_LOG("hash = %s",hash);
-  cache.del(std::string(hash));
-
-}
-
 int segmentor_customized_segment(void * segmentor,
                                  const std::string & str,
                                  std::vector<std::string> & words) {

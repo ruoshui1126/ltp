@@ -26,6 +26,9 @@ using namespace std;
 // note types used in note operations
 extern const char * const NOTE_SENT;
 extern const char * const NOTE_WORD;
+extern const char * const NOTE_CUS;
+extern const char * const NOTE_MDL;
+extern const char * const NOTE_LEX;
 extern const char * const NOTE_POS;
 extern const char * const NOTE_NE;
 extern const char * const NOTE_PARSER;
@@ -124,12 +127,29 @@ public:
   bool QueryNote(const char * note_name) const;
 
   /*
+   * Get attributes value in `<note/>`
+   *
+   *  @param[in]  note_name   the name of the attribute in note
+   *  @return     const char* return attributes value 
+   */
+  const char * QueryNoteValue(const char * note_name) const;
+
+  /*
    * Set attributes value in `<note/>` to "y"
    *
    *  @param[in]  note_name   the name of the attribute in note
    *  @return     int         return 0
    */
   int SetNote(const char * note_name);
+
+  /*
+   * Set attributes value in `<note/>`
+   *
+   *  @param[in]  note_name   the name of the attribute in note
+   *  @param[in]  note_value  the value of the attribute in note
+   *  @return     int         return 0
+   */
+  int SetNoteValue(const char * note_name, const char * note_value);
 
   /*
    * Set attributes value in `<note/>` to "n"

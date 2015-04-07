@@ -14,6 +14,9 @@
 
 const char * const NOTE_SENT    = "sent";
 const char * const NOTE_WORD    = "word";
+const char * const NOTE_CUS    = "custom";
+const char * const NOTE_MDL    = "model";
+const char * const NOTE_LEX    = "lexicon";
 const char * const NOTE_POS     = "pos";
 const char * const NOTE_NE      = "ne";
 const char * const NOTE_PARSER  = "parser";
@@ -1246,6 +1249,7 @@ bool XML4NLP::LTMLValidation() {
 void XML4NLP::ClearAllNote() {
   ClearNote(NOTE_SENT);
   ClearNote(NOTE_WORD);
+  ClearNote(NOTE_CUS);
   ClearNote(NOTE_POS);
   ClearNote(NOTE_NE);
   ClearNote(NOTE_PARSER);
@@ -1434,8 +1438,12 @@ int XML4NLP::CheckRange(int paragraphIdx) const {
 
 bool XML4NLP::QueryNote(const char *cszNoteName)  const {
   if (note.nodePtr == NULL) return false; // OK?
-
   return (strcmp(note.nodePtr->Attribute(cszNoteName), "y") == 0) ? true : false;
+}
+
+const char * XML4NLP::QueryNoteValue(const char * cszNoteName) const {
+  if (note.nodePtr == NULL) return NULL;
+  return note.nodePtr->Attribute(cszNoteName);
 }
 
 int XML4NLP::SetNote(const char *cszNoteName) {
@@ -1444,6 +1452,15 @@ int XML4NLP::SetNote(const char *cszNoteName) {
     m_tiXmlDoc.RootElement()->LinkEndChild( note.nodePtr );
   }
   note.nodePtr->SetAttribute(cszNoteName, "y");
+  return 0;
+}
+
+int XML4NLP::SetNoteValue(const char * cszNoteName, const char * cszNoteValue) {
+  if (note.nodePtr == NULL) {
+    note.nodePtr = new TiXmlElement(TAG_NOTE);
+    m_tiXmlDoc.RootElement()->LinkEndChild( note.nodePtr );
+  }
+  note.nodePtr->SetAttribute(cszNoteName, cszNoteValue);
   return 0;
 }
 

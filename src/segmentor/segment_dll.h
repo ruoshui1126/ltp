@@ -42,8 +42,6 @@ SEGMENTOR_DLL_API void * segmentor_create_segmentor(const char * baseline_model_
  *  @return     int           i don't know
  */
 SEGMENTOR_DLL_API int segmentor_release_segmentor(void * parser);
-SEGMENTOR_DLL_API void segmentor_release_cache(const char * model_path, const char * lexicon_path);
-
 /*
  * run segment on the given segmentor
  *

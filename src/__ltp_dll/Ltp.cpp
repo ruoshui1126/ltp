@@ -220,6 +220,23 @@ int LTP::wordseg(XML4NLP & xml) {
     return kEmptyStringError;
   }
 
+  bool is_customzied = xml.QueryNote(NOTE_CUS);
+  char * model_path;
+  if (is_customzied) {
+    model_path = xml.QueryNoteValue(NOTE_MDL);
+    if (strlen(model_path)==0) {
+      model_path = NULL;
+    }
+  }
+
+  char * lexicon_path;
+  if (is_customzied) {
+    lexicon_path  = xml.QueryNoteValue(NOTE_LEX);
+    if (strlen(lexicon_path)==0) {
+      lexicon_path = NULL;
+    }
+  }
+
   for (int i = 0; i < stnsNum; ++ i) {
     std::string strStn = xml.GetSentence(i);
     std::vector<std::string> vctWords;
@@ -229,7 +246,15 @@ int LTP::wordseg(XML4NLP & xml) {
       return kSentenceTooLongError;
     }
 
-    if (0 == segmentor_segment(segmentor, strStn, vctWords)) {
+    int ret = 0;
+
+    if (is_customzied) {
+      ret = segmentor_customized_segment(segmentor, model_path, lexicon_path, strStn, vctWords);
+    } else {
+      ret = segmentor_segment(segmentor, strStn, vctWords);
+    }
+
+    if (0 == ret) {
       ERROR_LOG("in LTP::wordseg, failed to perform word segment on \"%s\"",
           strStn.c_str());
       return kWordsegError;
@@ -245,43 +270,6 @@ int LTP::wordseg(XML4NLP & xml) {
   return 0;
 }
 
-int LTP::wordseg(std::string sent, std::vector<std::string> & words) {
-  // get the segmentor pointer
-  void * segmentor = m_ltpResource.GetSegmentor();
-  if (0 == segmentor) {
-    ERROR_LOG("in LTP::wordseg, failed to init a segmentor");
-    return kWordsegError;
-  }
-
-  if (0 == segmentor_segment(segmentor, sent, words)) {
-    ERROR_LOG("in LTP::wordseg, failed to perform word segment on \"%s\"",
-          sent.c_str());
-    return kWordsegError;
-  }
-
-  return 0;
-}
-
-void LTP::release_cache(const char * model_path, const char * lexicon_path) {
-  segmentor_release_cache(model_path, lexicon_path);
-}
-
-int LTP::wordseg(std::string sent,const char * model_path, const char * lexicon_path, std::vector<std::string> & words) {
-  // get the segmentor pointer
-  void * segmentor = m_ltpResource.GetSegmentor();
-  if (0 == segmentor) {
-    ERROR_LOG("in LTP::wordseg, failed to init a segmentor");
-    return kWordsegError;
-  }
-
-  if (0 == segmentor_customized_segment(segmentor, model_path, lexicon_path, sent, words)) {
-    ERROR_LOG("in LTP::wordseg, failed to perform word segment on \"%s\"",
-          sent.c_str());
-    return kWordsegError;
-  }
-
-  return 0;
-}
 // integrate postagger into LTP
 int LTP::postag(XML4NLP & xml) {
   if ( xml.QueryNote(NOTE_POS) ) {
